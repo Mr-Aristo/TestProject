@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DevExpress.ClipboardSource.SpreadsheetML;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -27,5 +29,8 @@ namespace TestProjectUI.Models
 
         private string description;
         public string EmployeeDescription { get { return description;  } set { description = value; OnPropertyChanged("Description"); } }
+
+        public ObservableCollection<EmployeeModel> SubItems { get; set; } = new ObservableCollection<EmployeeModel> { };
+        public ObservableCollection<EmployeeModel> Parent { get; set; }
     }
 }

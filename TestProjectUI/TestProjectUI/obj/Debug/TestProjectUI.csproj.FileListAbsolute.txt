@@ -181,3 +181,4 @@ D:\VS projects\TestProjects\TestProjectUI\TestProjectUI\bin\Debug\de\DevExpress.
 D:\VS projects\TestProjects\TestProjectUI\TestProjectUI\bin\Debug\es\DevExpress.Office.v21.2.Core.resources.dll
 D:\VS projects\TestProjects\TestProjectUI\TestProjectUI\bin\Debug\ja\DevExpress.Office.v21.2.Core.resources.dll
 D:\VS projects\TestProjects\TestProjectUI\TestProjectUI\bin\Debug\ru\DevExpress.Office.v21.2.Core.resources.dll
+D:\VS projects\TestProjects\TestProjectUI\TestProjectUI\obj\Debug\GeneratedInternalTypeHelper.g.cs
