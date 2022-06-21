@@ -68,7 +68,7 @@ namespace TestProjectAPI.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Errorr get employees !");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Errorr can't get employees !");
             }
         }
 

@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
+using Serilog.Sinks.MSSqlServer;
 
 namespace TestProjectUI.ViewModel
 {
@@ -29,19 +30,28 @@ namespace TestProjectUI.ViewModel
         #endregion
 
         static int index = 1;
-        EmployeeService service;
+        private EmployeeService service;
+        private EmployeeModel employee;
+        private ObservableCollection<EmployeeModel> employeeModels = new ObservableCollection<EmployeeModel>();
         public EmployeeViewModel()
         {
             service = new EmployeeService();
 
             for (int i = 1; i < 2; i++)
             {
+                service.GetAllEmployee();
                 EmployeeModel d = new EmployeeModel() { EmployeeID = index++, EmployeeName = $"Имя {index}", EmployeeDescription = $"Описание {index}", Parent = col };
                 col.Add(d);
                 for (int k = 1; k < 2; k++)
                     d.SubItems.Add(new EmployeeModel() { EmployeeID = index++, EmployeeName = $"Имя {index}", EmployeeDescription = $"Описание {index}", Parent = d.SubItems });
             }
             cvs.Source = col;
+        }
+        public ObservableCollection<EmployeeModel> Employee
+        {
+            get { return Employee; }
+            set { SetProperty<ObservableCollection<EmployeeModel>>(ref employeeModels, value); }
+
         }
 
         private ObservableCollection<EmployeeModel> col = new ObservableCollection<EmployeeModel>();
@@ -53,8 +63,6 @@ namespace TestProjectUI.ViewModel
 
         private void CmdAdd(object obj)
         {
-            List<EmployeeModel> ls = service.GetAllEmployee();
-
             EmployeeModel d0 = obj as EmployeeModel;
             d0?.SubItems.Add(new EmployeeModel() { EmployeeID = index++, EmployeeName = $"Имя {index}", EmployeeDescription = $"Описание {index}", Parent = d0.SubItems });
         }
@@ -80,9 +88,9 @@ namespace TestProjectUI.ViewModel
         {
             //EmployeeList = service.GetAllEmployee();
         }
-                       
 
-        private EmployeeModel employee;
+
+
 
         public EmployeeModel EmployeeAdd
         {
@@ -105,6 +113,6 @@ namespace TestProjectUI.ViewModel
         }
 
 
-   
+
     }
 }
