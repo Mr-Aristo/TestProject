@@ -53,6 +53,8 @@ namespace TestProjectUI.ViewModel
 
         private void CmdAdd(object obj)
         {
+            List<EmployeeModel> ls = service.GetAllEmployee();
+
             EmployeeModel d0 = obj as EmployeeModel;
             d0?.SubItems.Add(new EmployeeModel() { EmployeeID = index++, EmployeeName = $"Имя {index}", EmployeeDescription = $"Описание {index}", Parent = d0.SubItems });
         }

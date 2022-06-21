@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http.Formatting;
 using System.Windows;
+using Newtonsoft.Json;
 
 namespace TestProjectUI.Models.Services
 {
@@ -104,9 +105,13 @@ namespace TestProjectUI.Models.Services
                     }
 
                     //deserialization
-                    IList<EmployeeModel> ls =
-                        await response.Content.ReadAsAsync<IList<EmployeeModel>>();
-                    GetAll(ls);
+                    EmployeeModel model = new EmployeeModel();
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    model = JsonConvert.DeserializeObject<EmployeeModel>(responseString);
+
+
+
+                    
                 }
                 catch (Exception ex)
                 {
@@ -116,9 +121,9 @@ namespace TestProjectUI.Models.Services
 
 
         }
-        public IList<EmployeeModel> GetAll(IList<EmployeeModel> ls)
+        public List<EmployeeModel> GetAll(List<EmployeeModel> ls)
         {
-            return ls; 
+            return ls;
 
         }
 
@@ -147,7 +152,7 @@ namespace TestProjectUI.Models.Services
                     {
                         MessageBox.Show("failed");
                     }
-              
+
                 }
                 catch (Exception ex)
                 {
