@@ -30,16 +30,13 @@ namespace TestProjectUI
         {
             InitializeComponent();
 
-            
+
         }
 
         private void SimpleButton_Click(object sender, RoutedEventArgs e)
         {
-
             CreateWindow window = new CreateWindow();
             window.Show();
-
-          
 
         }
     }

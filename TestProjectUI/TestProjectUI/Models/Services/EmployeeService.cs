@@ -7,40 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http.Formatting;
 using System.Windows;
+using System.Net;
 
 namespace TestProjectUI.Models.Services
 {
     public class EmployeeService
     {
         public static readonly String conURL = "https://localhost:7129/api/Employee";
-
-
-
-        //static async Task<Uri> CreateEmployee(EmployeeModel employee)
-        //{
-
-        //    HttpResponseMessage response = await client.PostAsJsonAsync("api/CreateEmployee", employee);
-        //    response.EnsureSuccessStatusCode();
-
-        //    return response.Headers.Location;
-        //}
-
-        //static async Task RunAsync()
-        //{
-        //    client.BaseAddress = new Uri("https://localhost:7129/");
-        //    client.DefaultRequestHeaders.Accept.Clear();
-        //    client.DefaultRequestHeaders.Accept.Add(
-        //        new MediaTypeWithQualityHeaderValue("application/json"));
-        //    EmployeeModel employee = new EmployeeModel
-        //    {
-
-        //        EmployeeName = "wpf",
-        //        EmployeeDescription = "from wpf"
-        //    };
-        //    await CreateEmployee(employee);
-        //}
-
-
 
         public async void CreateEmployee(EmployeeModel md)
         {
@@ -85,80 +58,106 @@ namespace TestProjectUI.Models.Services
             }
         }
 
-        public async void GetAllEmployee()
+
+
+
+
+        public static Task<HttpResponseMessage> GetCall()
         {
-            using (HttpClient client = new HttpClient())
+
+            try
             {
-                try
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                string apiUrl = $"{conURL}/GetEmployee";
+                using (HttpClient client = new HttpClient())
                 {
-                    HttpResponseMessage response = await client.GetAsync($"{conURL}/GetEmployee");
-
-                    response.EnsureSuccessStatusCode();
-                    if (response.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show("Value getted");
-                    }
-                    else
-                    {
-                        MessageBox.Show("failed");
-                    }
-
-                    //deserialization
-                    List<EmployeeModel> ls =
-                        await response.Content.ReadAsAsync<List<EmployeeModel>>();
-                  
-
-                    GetAll(ls);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message + "May server not running");
+                    client.BaseAddress = new Uri(apiUrl);
+                    client.Timeout = TimeSpan.FromSeconds(900);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var response = client.GetAsync(apiUrl);
+                    response.Wait();
+                    return response;
                 }
             }
-
-
-        }
-        public IList<EmployeeModel> GetAll(IList<EmployeeModel> ls)
-        {
-            return ls; 
-
-        }
-
-        public async void EmployeeUpdate(EmployeeModel employee)
-        {
-            var val = new EmployeeModel
+            catch (Exception ex)
             {
-                EmployeeName = employee.EmployeeName,
-                EmployeeDescription = employee.EmployeeDescription,
-            };
-
-            using (HttpClient client = new HttpClient())
-            {
-
-
-                try
-                {
-                    HttpResponseMessage response = await client.PutAsJsonAsync($"{conURL}/{employee.EmployeeID}", val);
-                    response.EnsureSuccessStatusCode();
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show("Value putted");
-                    }
-                    else
-                    {
-                        MessageBox.Show("failed");
-                    }
-              
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message + "May server not running");
-                }
+                throw;
             }
         }
 
 
+
+        public static Task<HttpResponseMessage> PostCall<T>(T model) where T : class
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                string apiUrl = $"/{conURL}/";
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(apiUrl);
+                    client.Timeout = TimeSpan.FromSeconds(900);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var response = client.PostAsJsonAsync(apiUrl, model);
+                    response.Wait();
+                    return response;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+        public static Task<HttpResponseMessage> PutCall<T>(T model) where T : class
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                string apiUrl = $"/{conURL}/UpdateEmployee/";
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(apiUrl);
+                    client.Timeout = TimeSpan.FromSeconds(900);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var response = client.PutAsJsonAsync(apiUrl, model);
+                    response.Wait();
+                    return response;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        public static Task<HttpResponseMessage> DeleteCall(string url)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                string apiUrl = $"/{conURL}/DeleteEmployee"+ url;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(apiUrl);
+                    client.Timeout = TimeSpan.FromSeconds(900);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var response = client.DeleteAsync(apiUrl);
+                    response.Wait();
+                    return response;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
 
     }

@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
 using Serilog.Sinks.MSSqlServer;
+using System.Net.Http;
 
 namespace TestProjectUI.ViewModel
 {
@@ -39,7 +40,7 @@ namespace TestProjectUI.ViewModel
 
             for (int i = 1; i < 2; i++)
             {
-                service.GetAllEmployee();
+
                 EmployeeModel d = new EmployeeModel() { EmployeeID = index++, EmployeeName = $"Имя {index}", EmployeeDescription = $"Описание {index}", Parent = col };
                 col.Add(d);
                 for (int k = 1; k < 2; k++)
@@ -47,12 +48,13 @@ namespace TestProjectUI.ViewModel
             }
             cvs.Source = col;
         }
-        public ObservableCollection<EmployeeModel> Employee
-        {
-            get { return Employee; }
-            set { SetProperty<ObservableCollection<EmployeeModel>>(ref employeeModels, value); }
+        //public ObservableCollection<EmployeeModel> Employee
+        //{
+        //    get { return Employee; }
+        //    set { SetProperty<ObservableCollection<EmployeeModel>>(ref employeeModels, value); }
 
-        }
+        //}
+
 
         private ObservableCollection<EmployeeModel> col = new ObservableCollection<EmployeeModel>();
         private CollectionViewSource cvs = new CollectionViewSource();
@@ -75,6 +77,8 @@ namespace TestProjectUI.ViewModel
 
 
 
+        #region Properties
+
 
         private List<EmployeeModel> employeeList;
 
@@ -84,14 +88,16 @@ namespace TestProjectUI.ViewModel
             set { employeeList = value; OnPropertyChange("EmployeeList"); }
 
         }
-        private void LoadData()
+
+        private string _responseMessage ;
+
+        public string ResponseMessage
         {
-            //EmployeeList = service.GetAllEmployee();
+            get { return _responseMessage; }
+            //set { SetProperty(ref _responseMessage, value); }
+
+
         }
-
-
-
-
         public EmployeeModel EmployeeAdd
         {
             get { return employee; }
@@ -112,6 +118,51 @@ namespace TestProjectUI.ViewModel
             set { employee.EmployeeDescription = value; OnPropertyChange("EmployeeDescription"); }
         }
 
+        #endregion
+
+
+        #region CRUD
+
+        private void GetEmplooyee()
+        {
+            var employee = EmployeeService.GetCall();
+
+            if (employee.Result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                EmployeeList = employee.Result.Content.ReadAsAsync<List<EmployeeModel>>().Result;
+            }
+        }
+
+        private void CreateEmployee()
+        {
+            EmployeeModel employeeModel = new EmployeeModel()
+            {
+                EmployeeName = EmployeeName,
+                EmployeeDescription = EmployeeDescription,
+
+            };
+
+            EmployeeService.PostCall(employeeModel);
+
+
+        }
+
+        private void UpdateEmployee(EmployeeModel model)
+        {
+            EmployeeService.PutCall(model);
+
+        }
+
+
+        private void DeleteEmployee(EmployeeModel model)
+        {
+            EmployeeService.DeleteCall("?id=" + model.EmployeeID);
+
+        }
+
+
+
+        #endregion
 
 
     }
